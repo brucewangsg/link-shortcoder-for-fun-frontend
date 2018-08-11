@@ -1,1 +1,1 @@
-export const API_HOST = 'http://localhost:3011';
+export const API_HOST = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3011';
