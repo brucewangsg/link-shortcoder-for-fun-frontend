@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Input, Icon } from 'antd';
+import { API_HOST } from './config.js';
+import axios from 'axios';
 
 class App extends Component {
   state = {
@@ -10,6 +12,7 @@ class App extends Component {
 
   onURLChanged(value) {
     this.setState({
+      shortcode: null,
       url: value
     })
     if (document.activeElement && !document.activeElement.classList.contains("ant-input")) {
@@ -17,9 +20,43 @@ class App extends Component {
     }
   }
 
+  normalizeURL() {
+    if (this.state.url && this.state.url.indexOf('.') > 0 && this.state.url.indexOf('://') < 0) {
+      this.setState({
+        url: 'https://' + this.state.url
+      })
+    }
+  }
+
   checkLink() {
     if (this.state.url && this.state.url.length > 0) {
-      console.log(this.state.url);
+      let url = this.state.url;
+      axios.get(`${API_HOST}/links/check?url=${encodeURIComponent(url)}`, { responseType: 'json' }).then((response) => {
+        let jsonDetail = response.data;
+        if (jsonDetail && jsonDetail.data && jsonDetail.data.shortcode) {
+          if (jsonDetail.data.url == url.replace(/^https?:\/\//, '')) { 
+            this.setState({
+              shortcode: jsonDetail.data.shortcode
+            })
+          }
+        }
+      });
+    }
+  }
+
+  submitURL() {
+    if (this.state.url && this.state.url.length > 0) {
+      let url = this.state.url;
+      axios.post(`${API_HOST}/links`, { url: url }, { responseType: 'json' }).then((response) => {
+        let jsonDetail = response.data;
+        if (jsonDetail && jsonDetail.data && jsonDetail.data.shortcode) {
+          if (jsonDetail.data.url == url.replace(/^https?:\/\//, '')) { 
+            this.setState({
+              shortcode: jsonDetail.data.shortcode
+            })
+          }
+        }
+      });
     }
   }
 
@@ -34,14 +71,6 @@ class App extends Component {
     }.bind(this), time);
   }
 
-  normalizeURL() {
-    if (this.state.url && this.state.url.indexOf('.') > 0 && this.state.url.indexOf('://') < 0) {
-      this.setState({
-        url: 'https://' + this.state.url
-      })
-    }
-  }
-
   render() {
     return (
       <div className="App">
@@ -53,8 +82,12 @@ class App extends Component {
           value={this.state.url}
           className="ant--input"
           onChange={(e) => { this.onURLChanged(e.target.value); this.debounce(() => this.checkLink(), 280) }}
-          onPressEnter={() => this.normalizeURL()}
+          onPressEnter={() => { this.normalizeURL(); this.submitURL(); } }
         />
+
+        {this.state.shortcode && <div className='link-to'>
+          <a target='_blank' href={`${API_HOST}/${this.state.shortcode}`}>{`${(API_HOST ? API_HOST : `${window.location.protocol}//${window.location.host}:${window.location.port}`).replace(/:80/, '')}/${this.state.shortcode}`}</a>
+        </div>}
       </div>
     );
   }
