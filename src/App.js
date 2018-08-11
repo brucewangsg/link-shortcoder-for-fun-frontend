@@ -25,12 +25,13 @@ class App extends Component {
 
   debounce(func, time) {
     var timeout = this.debouncedTimeout;
-    if (!timeout) {
-      this.debouncedTimeout = setTimeout(function() {
-        func();
-        this.debouncedTimeout = null;
-      }.bind(this), time);
+    if (timeout) {
+      clearTimeout(timeout);
     }
+    this.debouncedTimeout = setTimeout(function() {
+      func();
+      this.debouncedTimeout = null;
+    }.bind(this), time);
   }
 
   normalizeURL() {
@@ -51,7 +52,7 @@ class App extends Component {
           prefix={<Icon type="star" style={{ color: 'rgba(0,0,0,.25)' }} />}
           value={this.state.url}
           className="ant--input"
-          onChange={(e) => { this.onURLChanged(e.target.value); this.debounce(() => this.checkLink(), 200) }}
+          onChange={(e) => { this.onURLChanged(e.target.value); this.debounce(() => this.checkLink(), 280) }}
           onPressEnter={() => this.normalizeURL()}
         />
       </div>
