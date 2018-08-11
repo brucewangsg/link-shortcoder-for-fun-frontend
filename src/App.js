@@ -98,7 +98,7 @@ class App extends Component {
         />
 
         {this.state.shortcode && <div className='link-to'>
-          <a target='_blank' href={`${API_HOST}/${this.state.shortcode}`}>{`${(API_HOST ? API_HOST : `${window.location.protocol}//${(window.location.host+'').replace(/:[0-9]+$/,'')}:${window.location.port}`).replace(/:80/, '')}/${this.state.shortcode}`}</a>
+          <a target='_blank' href={`${API_HOST}/${this.state.shortcode}`}>{`${(API_HOST ? API_HOST : `${window.location.protocol}//${(window.location.host+'').replace(/:[0-9]+$/,'')}:${window.location.port}`).replace(/:80/, '').replace(/:$/, '')}/${this.state.shortcode}`}</a>
         </div>}
       </div>
     );
