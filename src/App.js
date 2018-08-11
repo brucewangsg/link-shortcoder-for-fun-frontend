@@ -27,6 +27,14 @@ class App extends Component {
       })
     }
   }
+  
+  simplifyURL(url) {
+    url = url.replace(/^https?:\/\//, '')
+    url = url.split('#')[0];
+    url = url.indexOf('/') < 0 ? url + '/' : url; 
+    url = url.replace(/[\?&]+$/, '')
+    return url;
+  }
 
   checkLink() {
     if (this.state.url && this.state.url.length > 0) {
@@ -34,7 +42,7 @@ class App extends Component {
       axios.get(`${API_HOST}/links/check?url=${encodeURIComponent(url)}`, { responseType: 'json' }).then((response) => {
         let jsonDetail = response.data;
         if (jsonDetail && jsonDetail.data && jsonDetail.data.shortcode) {
-          if (jsonDetail.data.url == url.replace(/^https?:\/\//, '')) { 
+          if (jsonDetail.data.url === this.simplifyURL(url)) { 
             this.setState({
               shortcode: jsonDetail.data.shortcode
             })
@@ -50,7 +58,11 @@ class App extends Component {
       axios.post(`${API_HOST}/links`, { url: url }, { responseType: 'json' }).then((response) => {
         let jsonDetail = response.data;
         if (jsonDetail && jsonDetail.data && jsonDetail.data.shortcode) {
-          if (jsonDetail.data.url == url.replace(/^https?:\/\//, '')) { 
+          url = url.replace(/^https?:\/\//, '')
+          url = url.split('#')[0];
+          url = url.indexOf('/') < 0 ? url + '/' : url; 
+          url = url.replace(/[\?&]+$/, '')
+          if (jsonDetail.data.url === this.simplifyURL(url)) { 
             this.setState({
               shortcode: jsonDetail.data.shortcode
             })
