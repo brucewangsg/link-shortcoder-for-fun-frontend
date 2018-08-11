@@ -31,8 +31,9 @@ class App extends Component {
   simplifyURL(url) {
     url = url.replace(/^https?:\/\//, '')
     url = url.split('#')[0];
-    url = url.indexOf('/') < 0 ? url + '/' : url; 
+    url = url.indexOf('/') < 0 ? (url.indexOf('?') > 0 ? url.replace(/\?/, '/?') : url + '/') : url; 
     url = url.replace(/[\?&]+$/, '')
+    url = url.replace(/[\?]{2,}/, '?').replace(/[\&]{2,}/, '&')
     return url;
   }
 
