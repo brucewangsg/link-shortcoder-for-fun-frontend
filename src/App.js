@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Input, Icon } from 'antd';
+// import { Input, Icon } from 'antd';
 import { API_HOST } from './config.js';
 import axios from 'axios';
 
@@ -87,14 +87,15 @@ class App extends Component {
     return (
       <div className="App">
         <h2>Shorten URL:</h2>
-        <Input
-          addonBefore="Link:"
+        <input
+          // addonBefore="Link:"
           placeholder="e.g. google.com"
-          prefix={<Icon type="star" style={{ color: 'rgba(0,0,0,.25)' }} />}
+          // prefix={<Icon type="star" style={{ color: 'rgba(0,0,0,.25)' }} />}
           value={this.state.url}
-          className="ant--input"
+          className="ant-input"
           onChange={(e) => { this.onURLChanged(e.target.value); this.debounce(() => this.checkLink(), 280) }}
-          onPressEnter={() => { this.normalizeURL(); this.submitURL(); } }
+          // onPressEnter={() => { this.normalizeURL(); this.submitURL(); } }
+          onKeyPress={(e) => { if (e.key == 'Enter') { this.normalizeURL(); this.submitURL(); }} }
         />
 
         {this.state.shortcode && <div className='link-to'>
