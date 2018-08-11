@@ -17,6 +17,22 @@ class App extends Component {
     }
   }
 
+  checkLink() {
+    if (this.state.url && this.state.url.length > 0) {
+      console.log(this.state.url);
+    }
+  }
+
+  debounce(func, time) {
+    var timeout = this.debouncedTimeout;
+    if (!timeout) {
+      this.debouncedTimeout = setTimeout(function() {
+        func();
+        this.debouncedTimeout = null;
+      }.bind(this), time);
+    }
+  }
+
   normalizeURL() {
     if (this.state.url && this.state.url.indexOf('.') > 0 && this.state.url.indexOf('://') < 0) {
       this.setState({
@@ -35,8 +51,7 @@ class App extends Component {
           prefix={<Icon type="star" style={{ color: 'rgba(0,0,0,.25)' }} />}
           value={this.state.url}
           className="ant--input"
-          onChange={(e) => this.onURLChanged(e.target.value)}
-          onBlur={() => this.normalizeURL()}
+          onChange={(e) => { this.onURLChanged(e.target.value); this.debounce(() => this.checkLink(), 200) }}
           onPressEnter={() => this.normalizeURL()}
         />
       </div>
