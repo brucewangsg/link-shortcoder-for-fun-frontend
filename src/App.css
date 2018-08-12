@@ -55,6 +55,14 @@
     outline: none;
 }
 
+.ant-input:focus, .ant-input:hover {
+border-color: #40a9ff;
+border-right-width: 1px!important;
+outline: 0;
+-webkit-box-shadow: 0 0 0 2px rgba(24,144,255,.2);
+box-shadow: 0 0 0 2px rgba(24,144,255,.2);
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
